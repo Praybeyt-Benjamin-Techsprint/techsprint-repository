@@ -1,9 +1,8 @@
-"""Real-time sign language landmark detection with MediaPipe Holistic.
+"""Real-time sign language recognition with MediaPipe Holistic.
 
-This script opens the default webcam, detects pose and hand landmarks in real
-time, draws the landmarks on each frame, and exits when the user presses "q".
-It is intentionally model-ready: TensorFlow recognition can be added by feeding
-extracted landmark keypoints into an LSTM, Transformer, or other classifier.
+This script opens the default webcam, detects pose and hand landmarks, gates
+model inference behind landmark motion, records one fixed-length sequence, and
+emits one prediction per signing cycle.
 """
 
 from __future__ import annotations
@@ -18,6 +17,7 @@ import time
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
@@ -47,8 +47,11 @@ DEFAULT_LABEL_MAP_PATH = Path("models/label_map.json")
 DEFAULT_PREDICTION_LOG_PATH = Path("Logs/predictions.csv")
 DEFAULT_CAMERA_WARMUP_FRAMES = 60
 FRAME_RETRY_DELAY_SECONDS = 0.05
-STABILIZATION_WINDOW = 10
+PREDICTION_HISTORY_LENGTH = 10
 MAX_SENTENCE_LENGTH = 5
+DEFAULT_SEQUENCE_LENGTH = 30
+DEFAULT_MOVEMENT_THRESHOLD = 0.015
+DEFAULT_RESET_STILL_FRAMES = 5
 
 
 class CameraOpenError(RuntimeError):
@@ -78,17 +81,32 @@ class CameraSession:
     config: CameraConfig
 
 
+class RecognitionPhase(Enum):
+    """Finite states for one-shot gesture recognition."""
+
+    IDLE = "IDLE"
+    RECORDING = "RECORDING"
+    PREDICTING = "PREDICTING"
+    WAITING_FOR_RESET = "WAITING_FOR_RESET"
+
+
 @dataclass
 class RecognitionState:
     """Runtime state for real-time gesture recognition."""
 
-    sequence: deque[np.ndarray]
+    sequence: list[np.ndarray]
     sentence: list[str]
     predictions: deque[int]
     probabilities: np.ndarray
     threshold: float
+    phase: RecognitionPhase = RecognitionPhase.IDLE
     accepted_label: str = ""
     confidence: float = 0.0
+    motion_score: float = 0.0
+    is_moving: bool = False
+    hands_visible: bool = False
+    still_frame_count: int = 0
+    previous_motion_landmarks: Optional[np.ndarray] = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -184,8 +202,29 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--sequence-length",
         type=int,
-        default=30,
-        help="Number of frames to send to the recognition model.",
+        default=None,
+        help=(
+            "Number of frames to send to the recognition model. Default: infer "
+            f"from the loaded model, falling back to {DEFAULT_SEQUENCE_LENGTH}."
+        ),
+    )
+    parser.add_argument(
+        "--movement-threshold",
+        type=float,
+        default=DEFAULT_MOVEMENT_THRESHOLD,
+        help=(
+            "Mean landmark position delta required to start recording. "
+            f"Default: {DEFAULT_MOVEMENT_THRESHOLD}."
+        ),
+    )
+    parser.add_argument(
+        "--reset-still-frames",
+        type=int,
+        default=DEFAULT_RESET_STILL_FRAMES,
+        help=(
+            "Consecutive below-threshold frames required before a new sign can "
+            f"start after prediction. Default: {DEFAULT_RESET_STILL_FRAMES}."
+        ),
     )
     parser.add_argument(
         "--prediction-threshold",
@@ -391,6 +430,87 @@ def extract_keypoints(results) -> np.ndarray:
     return np.concatenate([left_hand, right_hand]).astype(np.float32)
 
 
+def extract_motion_landmarks(results) -> np.ndarray:
+    """Extract pose and hand landmarks used only for movement detection.
+
+    The classifier still receives the original hand-only keypoints from
+    extract_keypoints(). This separate vector lets motion gating react to hand
+    and upper-body movement without changing the model input shape.
+    """
+    pose = (
+        np.array(
+            [
+                [landmark.x, landmark.y, landmark.z]
+                for landmark in results.pose_landmarks.landmark
+            ],
+            dtype=np.float32,
+        ).flatten()
+        if results.pose_landmarks
+        else np.zeros(33 * 3, dtype=np.float32)
+    )
+    left_hand = (
+        np.array(
+            [
+                [landmark.x, landmark.y, landmark.z]
+                for landmark in results.left_hand_landmarks.landmark
+            ],
+            dtype=np.float32,
+        ).flatten()
+        if results.left_hand_landmarks
+        else np.zeros(21 * 3, dtype=np.float32)
+    )
+    right_hand = (
+        np.array(
+            [
+                [landmark.x, landmark.y, landmark.z]
+                for landmark in results.right_hand_landmarks.landmark
+            ],
+            dtype=np.float32,
+        ).flatten()
+        if results.right_hand_landmarks
+        else np.zeros(21 * 3, dtype=np.float32)
+    )
+    return np.concatenate([pose, left_hand, right_hand]).astype(np.float32)
+
+
+def calculate_motion_score(
+    previous_landmarks: Optional[np.ndarray],
+    current_landmarks: np.ndarray,
+) -> float:
+    """Return the mean landmark displacement between consecutive frames.
+
+    Coordinates are MediaPipe-normalized positions, so a threshold such as
+    0.015 means the average active landmark moved roughly 1.5% of the frame.
+    Landmarks that appear or disappear are included so raising a hand into view
+    can start a recording cycle.
+    """
+    if (
+        previous_landmarks is None
+        or previous_landmarks.shape != current_landmarks.shape
+    ):
+        return 0.0
+
+    previous_points = previous_landmarks.reshape(-1, 3)
+    current_points = current_landmarks.reshape(-1, 3)
+    previous_visible = np.any(np.abs(previous_points) > 1e-6, axis=1)
+    current_visible = np.any(np.abs(current_points) > 1e-6, axis=1)
+    active_points = previous_visible | current_visible
+
+    if not np.any(active_points):
+        return 0.0
+
+    deltas = np.linalg.norm(
+        current_points[active_points] - previous_points[active_points],
+        axis=1,
+    )
+    return float(np.mean(deltas))
+
+
+def hands_are_visible(results) -> bool:
+    """Return True when MediaPipe sees at least one hand in the current frame."""
+    return bool(results.left_hand_landmarks or results.right_hand_landmarks)
+
+
 def draw_styled_landmarks(image, results, draw_face: bool = False) -> None:
     """Draw pose, hand, and optionally face landmarks on the frame."""
     mp_holistic = mp.solutions.holistic
@@ -448,22 +568,38 @@ def add_status_overlay(
     results,
     fps: float,
     recognition_state: RecognitionState,
+    sequence_length: int,
 ) -> None:
-    """Draw sentence, FPS, hands detected, threshold, and prediction history."""
+    """Draw recognition phase, recording progress, FPS, and motion status."""
     hands_detected = sum(
         landmark is not None
         for landmark in (results.left_hand_landmarks, results.right_hand_landmarks)
     )
     sentence = " ".join(recognition_state.sentence).upper()
-    header = sentence or "..."
-    confidence = int(recognition_state.confidence * 100)
-    accepted = (
-        f"{recognition_state.accepted_label.upper()} ({confidence}%)"
-        if recognition_state.accepted_label
-        else "Waiting for stable prediction"
-    )
+    confidence = recognition_state.confidence * 100
 
-    cv2.rectangle(image, (0, 0), (image.shape[1], 92), (0, 0, 0), thickness=-1)
+    if recognition_state.phase == RecognitionPhase.IDLE:
+        header = "Waiting for movement..."
+        status = (
+            "Move visible hands to start recording"
+            if recognition_state.hands_visible
+            else "Waiting for hands..."
+        )
+    elif recognition_state.phase == RecognitionPhase.RECORDING:
+        header = f"Recording: {len(recognition_state.sequence)}/{sequence_length} frames"
+        status = "Keep signing until the frame buffer is full"
+    elif recognition_state.phase == RecognitionPhase.PREDICTING:
+        header = "Predicting..."
+        status = "Running model on the completed sequence"
+    else:
+        header = (
+            f"Prediction: {recognition_state.accepted_label.upper()} ({confidence:.0f}%)"
+            if recognition_state.accepted_label
+            else "Prediction complete"
+        )
+        status = "Waiting for movement to stop before next sign"
+
+    cv2.rectangle(image, (0, 0), (image.shape[1], 118), (0, 0, 0), thickness=-1)
     cv2.putText(
         image,
         header,
@@ -476,7 +612,7 @@ def add_status_overlay(
     )
     cv2.putText(
         image,
-        f"{accepted} | FPS: {fps:.0f} | Hands: {hands_detected}/2 | Threshold: {recognition_state.threshold:.2f}",
+        status,
         (12, 72),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.65,
@@ -484,6 +620,33 @@ def add_status_overlay(
         2,
         cv2.LINE_AA,
     )
+    cv2.putText(
+        image,
+        (
+            f"State: {recognition_state.phase.value} | FPS: {fps:.0f} | "
+            f"Hands: {hands_detected}/2 | Motion: {recognition_state.motion_score:.4f} | "
+            f"Move threshold: {'ON' if recognition_state.is_moving else 'OFF'} | "
+            f"Confidence threshold: {recognition_state.threshold:.2f}"
+        ),
+        (12, 102),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.55,
+        (200, 220, 255),
+        1,
+        cv2.LINE_AA,
+    )
+
+    if sentence:
+        cv2.putText(
+            image,
+            f"Sentence: {sentence}",
+            (12, image.shape[0] - 18),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.65,
+            (255, 255, 255),
+            2,
+            cv2.LINE_AA,
+        )
 
 
 def load_labels(labels_path: Optional[Path]) -> Optional[list[str]]:
@@ -556,7 +719,7 @@ def prob_viz(
     colors: list[tuple[int, int, int]],
 ) -> np.ndarray:
     """Draw horizontal probability bars, labels, and confidence scores."""
-    start_y = 104
+    start_y = 132
     bar_x = 12
     label_x = 22
     percent_x = 275
@@ -602,11 +765,11 @@ def draw_prediction_history(
     """Draw the last 10 prediction labels on the right side of the frame."""
     panel_width = 240
     x1 = max(image.shape[1] - panel_width, 0)
-    cv2.rectangle(image, (x1, 104), (image.shape[1], 448), (0, 0, 0), thickness=-1)
+    cv2.rectangle(image, (x1, 132), (image.shape[1], 476), (0, 0, 0), thickness=-1)
     cv2.putText(
         image,
         "Last 10 Predictions",
-        (x1 + 12, 132),
+        (x1 + 12, 160),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.6,
         (255, 255, 255),
@@ -618,7 +781,7 @@ def draw_prediction_history(
         cv2.putText(
             image,
             actions[prediction_index],
-            (x1 + 12, 164 + row * 26),
+            (x1 + 12, 192 + row * 26),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.55,
             (180, 220, 255),
@@ -649,27 +812,13 @@ def log_prediction(log_path: Path, prediction: str, confidence: float) -> None:
         )
 
 
-def is_stable_prediction(predictions: deque[int], predicted_index: int) -> bool:
-    """Return True when the last 10 predictions agree with the current class."""
-    if len(predictions) < STABILIZATION_WINDOW:
-        return False
-    recent_predictions = list(predictions)[-STABILIZATION_WINDOW:]
-    return len(set(recent_predictions)) == 1 and recent_predictions[0] == predicted_index
-
-
-def update_recognition(
+def predict_completed_sequence(
     state: RecognitionState,
     model: Any,
     actions: np.ndarray,
-    keypoints: np.ndarray,
-    sequence_length: int,
     log_path: Path,
 ) -> None:
-    """Append keypoints, run LSTM inference, smooth predictions, and update text."""
-    state.sequence.append(keypoints)
-    if len(state.sequence) < sequence_length:
-        return
-
+    """Run exactly one model prediction for a completed sequence buffer."""
     input_sequence = np.expand_dims(np.array(state.sequence), axis=0)
     probabilities = model.predict(input_sequence, verbose=0)[0]
     state.probabilities = probabilities
@@ -678,13 +827,74 @@ def update_recognition(
     state.predictions.append(prediction_index)
     state.confidence = confidence
 
-    if is_stable_prediction(state.predictions, prediction_index) and confidence > state.threshold:
+    if confidence > state.threshold:
         predicted_action = str(actions[prediction_index])
-        if not state.sentence or predicted_action != state.sentence[-1]:
-            state.sentence.append(predicted_action)
-            state.sentence = state.sentence[-MAX_SENTENCE_LENGTH:]
-            log_prediction(log_path, predicted_action, confidence)
+        state.sentence.append(predicted_action)
+        state.sentence = state.sentence[-MAX_SENTENCE_LENGTH:]
+        log_prediction(log_path, predicted_action, confidence)
         state.accepted_label = predicted_action
+    else:
+        state.accepted_label = ""
+
+
+def update_recognition_state(
+    state: RecognitionState,
+    model: Any,
+    actions: np.ndarray,
+    keypoints: np.ndarray,
+    sequence_length: int,
+    movement_threshold: float,
+    reset_still_frames: int,
+    log_path: Path,
+) -> None:
+    """Advance the recognition state machine for one processed webcam frame.
+
+    IDLE waits for motion and never calls the model.
+    RECORDING stores exactly sequence_length consecutive frames.
+    PREDICTING runs one inference call and clears the buffer.
+    WAITING_FOR_RESET blocks new predictions until motion stops.
+    """
+    state.is_moving = state.motion_score >= movement_threshold
+
+    if state.is_moving:
+        state.still_frame_count = 0
+    else:
+        state.still_frame_count += 1
+
+    if state.phase == RecognitionPhase.IDLE:
+        if state.is_moving and state.hands_visible:
+            state.sequence.clear()
+            state.accepted_label = ""
+            state.confidence = 0.0
+            state.probabilities = np.zeros(len(actions), dtype=np.float32)
+            state.phase = RecognitionPhase.RECORDING
+
+    if state.phase == RecognitionPhase.RECORDING:
+        if not state.hands_visible:
+            # The classifier input is hand-only. If hands disappear, zeros would
+            # be appended and the model can learn to map that empty input to the
+            # first class. Reset instead of predicting on invalid data.
+            state.sequence.clear()
+            state.phase = RecognitionPhase.IDLE
+            return
+
+        # Collect one keypoint vector per frame. No prediction is made until the
+        # buffer reaches the model's fixed temporal input length.
+        state.sequence.append(keypoints)
+        if len(state.sequence) >= sequence_length:
+            state.sequence = state.sequence[:sequence_length]
+            state.phase = RecognitionPhase.PREDICTING
+            predict_completed_sequence(state, model, actions, log_path)
+            state.sequence.clear()
+            state.phase = RecognitionPhase.WAITING_FOR_RESET
+            state.still_frame_count = 0
+        return
+
+    if state.phase == RecognitionPhase.WAITING_FOR_RESET:
+        required_still_frames = max(reset_still_frames, 1)
+        if state.still_frame_count >= required_still_frames:
+            state.phase = RecognitionPhase.IDLE
+            state.sequence.clear()
 
 
 def validate_model_output(model: Any, actions: np.ndarray) -> None:
@@ -699,6 +909,45 @@ def validate_model_output(model: Any, actions: np.ndarray) -> None:
             "Model/action mismatch: "
             f"model outputs {model_classes} classes but {len(actions)} labels were loaded."
         )
+
+
+def get_model_sequence_length(model: Any) -> Optional[int]:
+    """Return the model's temporal input length when it is fixed."""
+    input_shape = getattr(model, "input_shape", None)
+    if input_shape is None or len(input_shape) < 3 or input_shape[1] is None:
+        return None
+    return int(input_shape[1])
+
+
+def resolve_sequence_length_for_model(
+    model: Any,
+    requested_sequence_length: Optional[int],
+) -> int:
+    """Choose a sequence length that matches the loaded model by default."""
+    expected_frames = get_model_sequence_length(model)
+
+    if requested_sequence_length is None:
+        if expected_frames is not None:
+            logging.info("Using model sequence length: %s frames", expected_frames)
+            return expected_frames
+        logging.info(
+            "Model input shape does not expose a fixed frame count; using %s frames.",
+            DEFAULT_SEQUENCE_LENGTH,
+        )
+        return DEFAULT_SEQUENCE_LENGTH
+
+    if requested_sequence_length <= 0:
+        raise RuntimeError("--sequence-length must be greater than zero.")
+
+    if expected_frames is not None and requested_sequence_length != expected_frames:
+        raise RuntimeError(
+            "Sequence length/model mismatch: "
+            f"model expects {expected_frames} frames but --sequence-length is "
+            f"{requested_sequence_length}. Pass --sequence-length {expected_frames} or load "
+            "a model trained with the configured frame count."
+        )
+
+    return requested_sequence_length
 
 
 def validate_keypoints_for_model(model: Any, keypoints: np.ndarray) -> None:
@@ -740,14 +989,18 @@ def read_threshold_slider(current_threshold: float, disabled: bool) -> float:
 
 def run_webcam_loop(args: argparse.Namespace) -> int:
     """Run the real-time webcam processing loop."""
+    if args.movement_threshold < 0:
+        raise RuntimeError("--movement-threshold must be zero or greater.")
+
     model = load_tensorflow_model(args.model_path)
     actions = load_actions(args.label_map_path, args.labels_path)
     validate_model_output(model, actions)
+    sequence_length = resolve_sequence_length_for_model(model, args.sequence_length)
     ensure_prediction_log(args.prediction_log_path)
     recognition_state = RecognitionState(
-        sequence=deque(maxlen=args.sequence_length),
+        sequence=[],
         sentence=[],
-        predictions=deque(maxlen=STABILIZATION_WINDOW),
+        predictions=deque(maxlen=PREDICTION_HISTORY_LENGTH),
         probabilities=np.zeros(len(actions), dtype=np.float32),
         threshold=args.prediction_threshold,
     )
@@ -792,6 +1045,14 @@ def run_webcam_loop(args: argparse.Namespace) -> int:
                 results = mediapipe_detection(frame, holistic_model)
                 draw_styled_landmarks(frame, results, draw_face=args.draw_face)
                 keypoints = extract_keypoints(results)
+                motion_landmarks = extract_motion_landmarks(results)
+                recognition_state.hands_visible = hands_are_visible(results)
+                recognition_state.motion_score = calculate_motion_score(
+                    recognition_state.previous_motion_landmarks,
+                    motion_landmarks,
+                )
+                recognition_state.previous_motion_landmarks = motion_landmarks
+
                 if not keypoint_shape_checked:
                     validate_keypoints_for_model(model, keypoints)
                     keypoint_shape_checked = True
@@ -800,19 +1061,27 @@ def run_webcam_loop(args: argparse.Namespace) -> int:
                     recognition_state.threshold,
                     args.disable_threshold_slider,
                 )
-                update_recognition(
+                update_recognition_state(
                     recognition_state,
                     model,
                     actions,
                     keypoints,
-                    args.sequence_length,
+                    sequence_length,
+                    args.movement_threshold,
+                    args.reset_still_frames,
                     args.prediction_log_path,
                 )
 
                 current_time = time.perf_counter()
                 fps = 1.0 / max(current_time - previous_time, 1e-6)
                 previous_time = current_time
-                add_status_overlay(frame, results, fps, recognition_state)
+                add_status_overlay(
+                    frame,
+                    results,
+                    fps,
+                    recognition_state,
+                    sequence_length,
+                )
                 prob_viz(recognition_state.probabilities, actions, frame, colors)
                 draw_prediction_history(frame, recognition_state.predictions, actions)
 
