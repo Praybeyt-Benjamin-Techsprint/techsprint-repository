@@ -1,0 +1,6 @@
+opencv-contrib-python==4.11.0.86
+mediapipe==0.10.21
+tensorflow==2.16.2
+numpy==1.26.4
+scikit-learn==1.5.2
+setuptools<81
