@@ -1,0 +1,6 @@
+target_lang,target_locale,language_name,notes
+fil,fil-PH,Filipino / Tagalog,Use Filipino for broad Philippine national-language output; regional Tagalog wording may vary.
+ceb,ceb-PH,Cebuano / Binisaya,"Validate with speakers from the intended deployment area, e.g. Cebu, Bohol, Mindanao."
+ilo,ilo-PH,Ilokano,Also written as Ilocano/Iloko in some systems; keep one internal code consistently.
+pam,pam-PH,Kapampangan,Regional and orthographic variants are common; store alternates as separate variant rows.
+hil,hil-PH,Hiligaynon / Ilonggo,"Validate region-specific variants, especially Iloilo versus Negros usage."

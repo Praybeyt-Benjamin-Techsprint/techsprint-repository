@@ -1,0 +1,136 @@
+action_id,action,output_type,canonical_text,source_lang,target_lang,target_locale,region,variant_id,is_primary,translation,register,formality,split,translator_id,reviewer_id,quality_status,notes
+0,hello,phrase,Hello,en,fil,fil-PH,,v1,true,Kumusta,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+0,hello,phrase,Hello,en,ceb,ceb-PH,,v1,true,Kumusta,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+0,hello,phrase,Hello,en,ilo,ilo-PH,,v1,true,Kumusta,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+0,hello,phrase,Hello,en,pam,pam-PH,,v1,true,Kumusta,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+0,hello,phrase,Hello,en,hil,hil-PH,,v1,true,Kamusta,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+1,thank_you,phrase,Thank you,en,fil,fil-PH,,v1,true,Salamat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+1,thank_you,phrase,Thank you,en,ceb,ceb-PH,,v1,true,Salamat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+1,thank_you,phrase,Thank you,en,ilo,ilo-PH,,v1,true,Agyamanak,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+1,thank_you,phrase,Thank you,en,pam,pam-PH,,v1,true,Salamat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+1,thank_you,phrase,Thank you,en,hil,hil-PH,,v1,true,Salamat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+2,see_you_later,phrase,See you later,en,fil,fil-PH,,v1,true,Kita tayo mamaya,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+2,see_you_later,phrase,See you later,en,ceb,ceb-PH,,v1,true,Magkita ta unya,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+2,see_you_later,phrase,See you later,en,ilo,ilo-PH,,v1,true,Agkita ta inton madamdama,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+2,see_you_later,phrase,See you later,en,pam,pam-PH,,v1,true,Mikit ta ka pang muli,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+2,see_you_later,phrase,See you later,en,hil,hil-PH,,v1,true,Magkitaay kita sa ulihi,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+3,see,word,See,en,fil,fil-PH,,v1,true,Tingnan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+3,see,word,See,en,ceb,ceb-PH,,v1,true,Tan-aw,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+3,see,word,See,en,ilo,ilo-PH,,v1,true,Kitaen,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+3,see,word,See,en,pam,pam-PH,,v1,true,Lawen,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+3,see,word,See,en,hil,hil-PH,,v1,true,Tan-aw,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+4,you,word,You,en,fil,fil-PH,,v1,true,Ikaw,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+4,you,word,You,en,ceb,ceb-PH,,v1,true,Ikaw,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+4,you,word,You,en,ilo,ilo-PH,,v1,true,Sika,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+4,you,word,You,en,pam,pam-PH,,v1,true,Ika,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+4,you,word,You,en,hil,hil-PH,,v1,true,Ikaw,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+5,later,word,Later,en,fil,fil-PH,,v1,true,Mamaya,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+5,later,word,Later,en,ceb,ceb-PH,,v1,true,Unya,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+5,later,word,Later,en,ilo,ilo-PH,,v1,true,Inton madamdama,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+5,later,word,Later,en,pam,pam-PH,,v1,true,Pang muli,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+5,later,word,Later,en,hil,hil-PH,,v1,true,Sa ulihi,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+6,yes,word,Yes,en,fil,fil-PH,,v1,true,Oo,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+6,yes,word,Yes,en,ceb,ceb-PH,,v1,true,Oo,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+6,yes,word,Yes,en,ilo,ilo-PH,,v1,true,Wen,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+6,yes,word,Yes,en,pam,pam-PH,,v1,true,Wa,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+6,yes,word,Yes,en,hil,hil-PH,,v1,true,Huo,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+7,no,word,No,en,fil,fil-PH,,v1,true,Hindi,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+7,no,word,No,en,ceb,ceb-PH,,v1,true,Dili,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+7,no,word,No,en,ilo,ilo-PH,,v1,true,Saan,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+7,no,word,No,en,pam,pam-PH,,v1,true,Ali,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+7,no,word,No,en,hil,hil-PH,,v1,true,Indi,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+8,help,word,Help,en,fil,fil-PH,,v1,true,Tulong,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+8,help,word,Help,en,ceb,ceb-PH,,v1,true,Tabang,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+8,help,word,Help,en,ilo,ilo-PH,,v1,true,Tulong,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+8,help,word,Help,en,pam,pam-PH,,v1,true,Saup,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+8,help,word,Help,en,hil,hil-PH,,v1,true,Bulig,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+9,me,word,Me,en,fil,fil-PH,,v1,true,Ako,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+9,me,word,Me,en,ceb,ceb-PH,,v1,true,Ako,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+9,me,word,Me,en,ilo,ilo-PH,,v1,true,Siak,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+9,me,word,Me,en,pam,pam-PH,,v1,true,Aku,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+9,me,word,Me,en,hil,hil-PH,,v1,true,Ako,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+10,father,word,Father,en,fil,fil-PH,,v1,true,Ama,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+10,father,word,Father,en,ceb,ceb-PH,,v1,true,Amahan,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+10,father,word,Father,en,ilo,ilo-PH,,v1,true,Ama,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+10,father,word,Father,en,pam,pam-PH,,v1,true,Ibpa,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+10,father,word,Father,en,hil,hil-PH,,v1,true,Amay,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+11,mother,word,Mother,en,fil,fil-PH,,v1,true,Ina,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+11,mother,word,Mother,en,ceb,ceb-PH,,v1,true,Inahan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+11,mother,word,Mother,en,ilo,ilo-PH,,v1,true,Ina,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+11,mother,word,Mother,en,pam,pam-PH,,v1,true,Ima,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+11,mother,word,Mother,en,hil,hil-PH,,v1,true,Iloy,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+12,abuse,word,Abuse,en,fil,fil-PH,,v1,true,Pang-aabuso,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+12,abuse,word,Abuse,en,ceb,ceb-PH,,v1,true,Pag-abuso,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+12,abuse,word,Abuse,en,ilo,ilo-PH,,v1,true,Panag-abuso,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+12,abuse,word,Abuse,en,pam,pam-PH,,v1,true,Pamanyamantala,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+12,abuse,word,Abuse,en,hil,hil-PH,,v1,true,Pag-abuso,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+13,please,word,Please,en,fil,fil-PH,,v1,true,Pakiusap,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+13,please,word,Please,en,ceb,ceb-PH,,v1,true,Palihug,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+13,please,word,Please,en,ilo,ilo-PH,,v1,true,Pangngaasim,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+13,please,word,Please,en,pam,pam-PH,,v1,true,Pakisabi,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+13,please,word,Please,en,hil,hil-PH,,v1,true,Palihog,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+14,want,word,Want,en,fil,fil-PH,,v1,true,Gusto,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+14,want,word,Want,en,ceb,ceb-PH,,v1,true,Gusto,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+14,want,word,Want,en,ilo,ilo-PH,,v1,true,Kayat,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+14,want,word,Want,en,pam,pam-PH,,v1,true,Buri,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+14,want,word,Want,en,hil,hil-PH,,v1,true,Gusto,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+15,what,word,What,en,fil,fil-PH,,v1,true,Ano,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+15,what,word,What,en,ceb,ceb-PH,,v1,true,Unsa,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+15,what,word,What,en,ilo,ilo-PH,,v1,true,Ania,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+15,what,word,What,en,pam,pam-PH,,v1,true,Nanu,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+15,what,word,What,en,hil,hil-PH,,v1,true,Ano,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+16,again,word,Again,en,fil,fil-PH,,v1,true,Muli,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+16,again,word,Again,en,ceb,ceb-PH,,v1,true,Usab,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+16,again,word,Again,en,ilo,ilo-PH,,v1,true,Manen,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+16,again,word,Again,en,pam,pam-PH,,v1,true,Pasibayu,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+16,again,word,Again,en,hil,hil-PH,,v1,true,Liwat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+17,eat,word,Eat,en,fil,fil-PH,,v1,true,Kumain,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+17,eat,word,Eat,en,ceb,ceb-PH,,v1,true,Kaon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+17,eat,word,Eat,en,ilo,ilo-PH,,v1,true,Mangan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+17,eat,word,Eat,en,pam,pam-PH,,v1,true,Mangan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+17,eat,word,Eat,en,hil,hil-PH,,v1,true,Kaon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+18,eat_food,phrase,Eat food,en,fil,fil-PH,,v1,true,Kumain ng pagkain,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+18,eat_food,phrase,Eat food,en,ceb,ceb-PH,,v1,true,Kaon og pagkaon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+18,eat_food,phrase,Eat food,en,ilo,ilo-PH,,v1,true,Mangan ti taraon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+18,eat_food,phrase,Eat food,en,pam,pam-PH,,v1,true,Mangan pamangan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+18,eat_food,phrase,Eat food,en,hil,hil-PH,,v1,true,Kaon sang pagkaon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+19,more,word,More,en,fil,fil-PH,,v1,true,Mas marami,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+19,more,word,More,en,ceb,ceb-PH,,v1,true,Dugang,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+19,more,word,More,en,ilo,ilo-PH,,v1,true,Ad-adu,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+19,more,word,More,en,pam,pam-PH,,v1,true,Mas dakal pa,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+19,more,word,More,en,hil,hil-PH,,v1,true,Dugang,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+20,go_to,phrase,Go to,en,fil,fil-PH,,v1,true,Pumunta sa,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+20,go_to,phrase,Go to,en,ceb,ceb-PH,,v1,true,Adto sa,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+20,go_to,phrase,Go to,en,ilo,ilo-PH,,v1,true,Mapan idiay,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+20,go_to,phrase,Go to,en,pam,pam-PH,,v1,true,Munta king,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+20,go_to,phrase,Go to,en,hil,hil-PH,,v1,true,Magkadto sa,neutral,neutral,test,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+21,fine,word,Fine,en,fil,fil-PH,,v1,true,Mabuti,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+21,fine,word,Fine,en,ceb,ceb-PH,,v1,true,Maayo,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+21,fine,word,Fine,en,ilo,ilo-PH,,v1,true,Naimbag,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+21,fine,word,Fine,en,pam,pam-PH,,v1,true,Mayap,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+21,fine,word,Fine,en,hil,hil-PH,,v1,true,Maayo,neutral,neutral,dev,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+22,like,word,Like,en,fil,fil-PH,,v1,true,Gusto,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+22,like,word,Like,en,ceb,ceb-PH,,v1,true,Ganahan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+22,like,word,Like,en,ilo,ilo-PH,,v1,true,Kayat,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+22,like,word,Like,en,pam,pam-PH,,v1,true,Buri,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+22,like,word,Like,en,hil,hil-PH,,v1,true,Gusto,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+23,learn,word,Learn,en,fil,fil-PH,,v1,true,Matuto,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+23,learn,word,Learn,en,ceb,ceb-PH,,v1,true,Makat-on,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+23,learn,word,Learn,en,ilo,ilo-PH,,v1,true,Agadal,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+23,learn,word,Learn,en,pam,pam-PH,,v1,true,Mibalu,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+23,learn,word,Learn,en,hil,hil-PH,,v1,true,Magtuon,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+24,name,word,Name,en,fil,fil-PH,,v1,true,Pangalan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+24,name,word,Name,en,ceb,ceb-PH,,v1,true,Ngalan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+24,name,word,Name,en,ilo,ilo-PH,,v1,true,Nagan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+24,name,word,Name,en,pam,pam-PH,,v1,true,Lagan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+24,name,word,Name,en,hil,hil-PH,,v1,true,Ngalan,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+25,meet,word,Meet,en,fil,fil-PH,,v1,true,Makilala,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+25,meet,word,Meet,en,ceb,ceb-PH,,v1,true,Makigkita,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+25,meet,word,Meet,en,ilo,ilo-PH,,v1,true,Makipagkita,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+25,meet,word,Meet,en,pam,pam-PH,,v1,true,Makituki,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+25,meet,word,Meet,en,hil,hil-PH,,v1,true,Makigkita,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+26,nice,word,Nice,en,fil,fil-PH,,v1,true,Maganda,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+26,nice,word,Nice,en,ceb,ceb-PH,,v1,true,Nindot,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+26,nice,word,Nice,en,ilo,ilo-PH,,v1,true,Naimbag,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+26,nice,word,Nice,en,pam,pam-PH,,v1,true,Mayap,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
+26,nice,word,Nice,en,hil,hil-PH,,v1,true,Nami,neutral,neutral,train,AI_DRAFT,,needs_native_review,Draft starter translation; validate with a native speaker before use.
