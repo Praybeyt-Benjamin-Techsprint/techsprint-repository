@@ -15,9 +15,6 @@ It produces:
     X_train, X_test, y_train, y_test: train/test partitions
 
     
-
-
-    
 """
 
 
@@ -38,7 +35,7 @@ from tensorflow.keras.utils import to_categorical
 DATA_PATH = Path("dataset")
 ACTIONS = [
     "hello",
-    "thank_you"
+    "thank_you",
     "see_you_later",
     "see",
     "you",
@@ -53,37 +50,17 @@ ACTIONS = [
     "please",
     "want",
     "what",
-    "again",
-    "eat",
     "eat_food",
     "more",
     "go_to",
     "fine",
     "like",
-    "learn",
     "name",
     "meet",
     "nice",
     "Sorry", 
-    "Excuse_me",
-    "Goodbye",
     "where",
-    "hotel",
-    "airport",
-    "hospital"
-    "police_station",
-    "mall",
-    "bus",
-    "train",
-    "taxi",
-    "drink"
-    "restaurant",
-    "water",
-    "how_much",
-    "money",
-    "pay",
-    "danger",
-    "bathroom",
+    "call",
 ]
 SEQUENCE_LENGTH = 30
 TEST_SIZE = 0.2

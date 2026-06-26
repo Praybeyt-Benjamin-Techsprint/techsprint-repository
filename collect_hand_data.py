@@ -42,26 +42,7 @@ except ImportError as exc:
 
 # Dataset configuration.
 ACTIONS = [
-    "Sorry", 
-    "Excuse_me",
-    "Goodbye",
-    "where",
-    "hotel",
-    "airport",
-    "hospital"
-    "police_station",
-    "mall",
-    "bus",
-    "train",
-    "taxi",
-    "drink"
-    "restaurant",
-    "water",
-    "how_much",
-    "money",
-    "pay",
-    "danger",
-    "bathroom",
+    "call",
 ]
 NO_SEQUENCES = 30
 SEQUENCE_LENGTH = 30
