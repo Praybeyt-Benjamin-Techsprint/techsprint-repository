@@ -32,3 +32,16 @@ ACTIONS = [
     "where",
     "call",
 ]
+
+STOP_ACTION = "stop"
+DELETE_ACTION = "delete"
+
+CONTROL_ACTIONS = [
+    STOP_ACTION,
+    DELETE_ACTION,
+]
+
+MODEL_ACTIONS = ACTIONS + CONTROL_ACTIONS
+
+# Backward-compatible lowercase alias for callers that expect an `actions` array.
+actions = ACTIONS

@@ -21,7 +21,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoa
 from tensorflow.keras.layers import Dense, Dropout, Input, LSTM
 from tensorflow.keras.models import Sequential
 
-from sign_actions import ACTIONS
+from sign_actions import MODEL_ACTIONS
 from preprocess_dataset import (
     DATA_PATH,
     SEQUENCE_LENGTH,
@@ -60,8 +60,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--actions",
         nargs="*",
-        default=ACTIONS,
-        help="Action labels to train on. Defaults to the configured ACTIONS list.",
+        default=MODEL_ACTIONS,
+        help="Action labels to train on. Defaults to the configured MODEL_ACTIONS list.",
     )
     parser.add_argument(
         "--auto-actions",

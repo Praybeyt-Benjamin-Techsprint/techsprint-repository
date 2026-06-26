@@ -1,0 +1,374 @@
+[
+    {
+        "date": "2026-06-26T14:33:23",
+        "dialect": "Cebuano",
+        "predictions": 60,
+        "average_confidence": 87.31,
+        "highest_confidence": 99.99,
+        "lowest_confidence": 50.41,
+        "prediction_history": [
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 82.36,
+                "timestamp": "2026-06-26T14:33:29"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.92,
+                "timestamp": "2026-06-26T14:33:50"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 69.01,
+                "timestamp": "2026-06-26T14:33:55"
+            },
+            {
+                "original": "father",
+                "translated": "Amahan",
+                "confidence": 94.49,
+                "timestamp": "2026-06-26T14:33:59"
+            },
+            {
+                "original": "see_you_later",
+                "translated": "Magkita ta unya",
+                "confidence": 99.99,
+                "timestamp": "2026-06-26T14:34:10"
+            },
+            {
+                "original": "eat_food",
+                "translated": "Kaon og pagkaon",
+                "confidence": 50.5,
+                "timestamp": "2026-06-26T14:34:15"
+            },
+            {
+                "original": "Sorry",
+                "translated": "Pasayloa ko",
+                "confidence": 72.52,
+                "timestamp": "2026-06-26T14:34:20"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.93,
+                "timestamp": "2026-06-26T14:34:28"
+            },
+            {
+                "original": "stop",
+                "translated": "Kumusta Amahan Magkita ta unya Kaon og pagkaon",
+                "confidence": 86.36,
+                "timestamp": "2026-06-26T14:34:32"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 86.59,
+                "timestamp": "2026-06-26T14:34:51"
+            },
+            {
+                "original": "father",
+                "translated": "Amahan",
+                "confidence": 85.01,
+                "timestamp": "2026-06-26T14:34:54"
+            },
+            {
+                "original": "see_you_later",
+                "translated": "Magkita ta unya",
+                "confidence": 99.99,
+                "timestamp": "2026-06-26T14:34:58"
+            },
+            {
+                "original": "eat_food",
+                "translated": "Kaon og pagkaon",
+                "confidence": 54.06,
+                "timestamp": "2026-06-26T14:35:03"
+            },
+            {
+                "original": "thank_you",
+                "translated": "Salamat",
+                "confidence": 50.41,
+                "timestamp": "2026-06-26T14:35:10"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.9,
+                "timestamp": "2026-06-26T14:35:15"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.94,
+                "timestamp": "2026-06-26T14:35:18"
+            },
+            {
+                "original": "stop",
+                "translated": "Kumusta Amahan Magkita ta unya",
+                "confidence": 92.83,
+                "timestamp": "2026-06-26T14:35:21"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 98.58,
+                "timestamp": "2026-06-26T14:35:40"
+            },
+            {
+                "original": "see",
+                "translated": "Tan-aw",
+                "confidence": 96.22,
+                "timestamp": "2026-06-26T14:35:44"
+            },
+            {
+                "original": "Sorry",
+                "translated": "Pasayloa ko",
+                "confidence": 77.33,
+                "timestamp": "2026-06-26T14:35:50"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.6,
+                "timestamp": "2026-06-26T14:35:52"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.95,
+                "timestamp": "2026-06-26T14:35:55"
+            },
+            {
+                "original": "see_you_later",
+                "translated": "Magkita ta unya",
+                "confidence": 99.85,
+                "timestamp": "2026-06-26T14:35:59"
+            },
+            {
+                "original": "eat_food",
+                "translated": "Kaon og pagkaon",
+                "confidence": 85.0,
+                "timestamp": "2026-06-26T14:36:19"
+            },
+            {
+                "original": "Sorry",
+                "translated": "Pasayloa ko",
+                "confidence": 65.65,
+                "timestamp": "2026-06-26T14:36:23"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 95.04,
+                "timestamp": "2026-06-26T14:36:26"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.95,
+                "timestamp": "2026-06-26T14:36:29"
+            },
+            {
+                "original": "stop",
+                "translated": "Kumusta Magkita ta unya",
+                "confidence": 87.58,
+                "timestamp": "2026-06-26T14:36:32"
+            },
+            {
+                "original": "name",
+                "translated": "Ngalan",
+                "confidence": 99.61,
+                "timestamp": "2026-06-26T14:36:58"
+            },
+            {
+                "original": "Sorry",
+                "translated": "Pasayloa ko",
+                "confidence": 53.39,
+                "timestamp": "2026-06-26T14:37:02"
+            },
+            {
+                "original": "eat_food",
+                "translated": "Kaon og pagkaon",
+                "confidence": 78.36,
+                "timestamp": "2026-06-26T14:37:06"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.71,
+                "timestamp": "2026-06-26T14:37:12"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 98.8,
+                "timestamp": "2026-06-26T14:37:18"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.65,
+                "timestamp": "2026-06-26T14:37:21"
+            },
+            {
+                "original": "thank_you",
+                "translated": "Salamat",
+                "confidence": 98.95,
+                "timestamp": "2026-06-26T14:37:25"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.55,
+                "timestamp": "2026-06-26T14:37:30"
+            },
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 80.66,
+                "timestamp": "2026-06-26T14:37:34"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.8,
+                "timestamp": "2026-06-26T14:37:37"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 61.81,
+                "timestamp": "2026-06-26T14:37:40"
+            },
+            {
+                "original": "father",
+                "translated": "Amahan",
+                "confidence": 86.69,
+                "timestamp": "2026-06-26T14:37:44"
+            },
+            {
+                "original": "abuse",
+                "translated": "Pag-abuso",
+                "confidence": 72.01,
+                "timestamp": "2026-06-26T14:37:46"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.34,
+                "timestamp": "2026-06-26T14:37:50"
+            },
+            {
+                "original": "mother",
+                "translated": "Inahan",
+                "confidence": 62.7,
+                "timestamp": "2026-06-26T14:37:53"
+            },
+            {
+                "original": "see_you_later",
+                "translated": "Magkita ta unya",
+                "confidence": 99.77,
+                "timestamp": "2026-06-26T14:37:58"
+            },
+            {
+                "original": "eat_food",
+                "translated": "Kaon og pagkaon",
+                "confidence": 98.42,
+                "timestamp": "2026-06-26T14:38:02"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 98.53,
+                "timestamp": "2026-06-26T14:38:05"
+            },
+            {
+                "original": "stop",
+                "translated": "Kumusta Amahan Inahan Magkita ta unya",
+                "confidence": 95.84,
+                "timestamp": "2026-06-26T14:38:08"
+            },
+            {
+                "original": "abuse",
+                "translated": "Pag-abuso",
+                "confidence": 65.65,
+                "timestamp": "2026-06-26T14:39:57"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 99.85,
+                "timestamp": "2026-06-26T14:40:00"
+            },
+            {
+                "original": "me",
+                "translated": "Ako",
+                "confidence": 97.44,
+                "timestamp": "2026-06-26T14:40:04"
+            },
+            {
+                "original": "like",
+                "translated": "Ganahan",
+                "confidence": 82.63,
+                "timestamp": "2026-06-26T14:40:15"
+            },
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 78.29,
+                "timestamp": "2026-06-26T14:40:19"
+            },
+            {
+                "original": "hello",
+                "translated": "Kumusta",
+                "confidence": 84.85,
+                "timestamp": "2026-06-26T14:40:23"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 67.61,
+                "timestamp": "2026-06-26T14:40:29"
+            },
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 94.38,
+                "timestamp": "2026-06-26T14:40:32"
+            },
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 92.29,
+                "timestamp": "2026-06-26T14:40:36"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 99.16,
+                "timestamp": "2026-06-26T14:40:39"
+            },
+            {
+                "original": "what",
+                "translated": "Unsa",
+                "confidence": 94.68,
+                "timestamp": "2026-06-26T14:40:42"
+            },
+            {
+                "original": "delete",
+                "translated": "",
+                "confidence": 90.75,
+                "timestamp": "2026-06-26T14:40:45"
+            },
+            {
+                "original": "me",
+                "translated": "Ako",
+                "confidence": 78.83,
+                "timestamp": "2026-06-26T14:40:49"
+            }
+        ],
+        "satisfaction": 4,
+        "comment": "none"
+    }
+]

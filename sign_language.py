@@ -22,7 +22,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional, Sequence
+
+from sign_actions import MODEL_ACTIONS
 
 try:
     os.environ.setdefault("MPLCONFIGDIR", ".cache/matplotlib")
@@ -113,6 +115,15 @@ class RecognitionState:
     hands_visible: bool = False
     still_frame_count: int = 0
     previous_motion_landmarks: Optional[np.ndarray] = None
+
+
+@dataclass(frozen=True)
+class PredictionResult:
+    """Accepted model prediction emitted after the recognition gate stabilizes."""
+
+    label: str
+    confidence: float
+    timestamp: datetime
 
 
 def parse_args() -> argparse.Namespace:
@@ -590,6 +601,7 @@ def add_status_overlay(
     fps: float,
     recognition_state: RecognitionState,
     sequence_length: int,
+    show_sentence: bool = True,
 ) -> None:
     """Draw recognition phase, recording progress, FPS, and motion status."""
     hands_detected = sum(
@@ -657,7 +669,7 @@ def add_status_overlay(
         cv2.LINE_AA,
     )
 
-    if sentence:
+    if show_sentence and sentence:
         cv2.putText(
             image,
             f"Sentence: {sentence}",
@@ -666,6 +678,66 @@ def add_status_overlay(
             0.65,
             (255, 255, 255),
             2,
+            cv2.LINE_AA,
+        )
+
+
+def draw_translation_overlay(image: np.ndarray, lines: Sequence[str]) -> None:
+    """Draw translated sentence lines in the bottom-right corner."""
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 0.58
+    thickness = 1
+    line_height = 25
+    padding = 12
+    max_text_width = min(
+        max(220, image.shape[1] - padding * 4 - 24),
+        image.shape[1] - padding * 2,
+    )
+    visible_lines: list[str] = []
+
+    for line in lines:
+        words = line.split()
+        current_line = ""
+        for word in words:
+            candidate = f"{current_line} {word}".strip()
+            candidate_width = cv2.getTextSize(
+                candidate,
+                font,
+                font_scale,
+                thickness,
+            )[0][0]
+            if current_line and candidate_width > max_text_width:
+                visible_lines.append(current_line)
+                current_line = f"  {word}"
+            else:
+                current_line = candidate
+        if current_line:
+            visible_lines.append(current_line)
+
+    if not visible_lines:
+        return
+
+    max_width = max(
+        cv2.getTextSize(line, font, font_scale, thickness)[0][0]
+        for line in visible_lines
+    )
+    panel_width = min(max_width + padding * 2, image.shape[1])
+    panel_height = line_height * len(visible_lines) + padding * 2
+    x1 = max(image.shape[1] - panel_width - 12, 0)
+    y1 = max(image.shape[0] - panel_height - 12, 0)
+    x2 = image.shape[1] - 12
+    y2 = image.shape[0] - 12
+
+    cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 0), thickness=-1)
+    for index, line in enumerate(visible_lines):
+        cv2.putText(
+            image,
+            line,
+            (x1 + padding, y1 + padding + 18 + index * line_height),
+            font,
+            font_scale,
+            (255, 255, 255),
+            thickness,
             cv2.LINE_AA,
         )
 
@@ -688,19 +760,25 @@ def load_labels(labels_path: Optional[Path]) -> Optional[list[str]]:
 
 
 def load_actions(label_map_path: Path, labels_path: Optional[Path]) -> np.ndarray:
-    """Load action labels in the same class-index order used during training."""
+    """Load action labels from the shared dataset vocabulary."""
+    labels = load_labels(labels_path) if labels_path else list(MODEL_ACTIONS)
+    invalid_labels = [label for label in labels if label not in MODEL_ACTIONS]
+    if invalid_labels:
+        raise RuntimeError(
+            "Unsupported labels found outside sign_actions.MODEL_ACTIONS: "
+            + ", ".join(invalid_labels)
+        )
+
     if label_map_path.exists():
         label_map = json.loads(label_map_path.read_text(encoding="utf-8"))
-        actions = sorted(label_map, key=label_map.get)
-        return np.array(actions)
+        stale_labels = [label for label in label_map if label not in MODEL_ACTIONS]
+        if stale_labels:
+            logging.warning(
+                "Ignoring stale label map entries outside sign_actions.MODEL_ACTIONS: %s",
+                ", ".join(stale_labels),
+            )
 
-    labels = load_labels(labels_path)
-    if labels:
-        return np.array(labels)
-
-    raise RuntimeError(
-        "No labels found. Provide models/label_map.json or pass --labels-path."
-    )
+    return np.array(labels)
 
 
 def load_tensorflow_model(model_path: Path) -> Any:
@@ -882,7 +960,7 @@ def predict_completed_sequence(
     model: Any,
     actions: np.ndarray,
     log_path: Path,
-) -> None:
+) -> Optional[PredictionResult]:
     """Run exactly one model prediction for a completed sequence buffer."""
     input_sequence = np.expand_dims(np.array(state.sequence), axis=0)
     probabilities = model.predict(input_sequence, verbose=0)[0]
@@ -898,8 +976,14 @@ def predict_completed_sequence(
         state.sentence = state.sentence[-MAX_SENTENCE_LENGTH:]
         log_prediction(log_path, predicted_action, confidence)
         state.accepted_label = predicted_action
+        return PredictionResult(
+            label=predicted_action,
+            confidence=confidence,
+            timestamp=datetime.now(),
+        )
     else:
         state.accepted_label = ""
+        return None
 
 
 def update_recognition_state(
@@ -911,7 +995,7 @@ def update_recognition_state(
     movement_threshold: float,
     reset_still_frames: int,
     log_path: Path,
-) -> None:
+) -> Optional[PredictionResult]:
     """Advance the recognition state machine for one processed webcam frame.
 
     IDLE waits for motion and never calls the model.
@@ -941,7 +1025,7 @@ def update_recognition_state(
             # first class. Reset instead of predicting on invalid data.
             state.sequence.clear()
             state.phase = RecognitionPhase.IDLE
-            return
+            return None
 
         # Collect one keypoint vector per frame. No prediction is made until the
         # buffer reaches the model's fixed temporal input length.
@@ -949,17 +1033,19 @@ def update_recognition_state(
         if len(state.sequence) >= sequence_length:
             state.sequence = state.sequence[:sequence_length]
             state.phase = RecognitionPhase.PREDICTING
-            predict_completed_sequence(state, model, actions, log_path)
+            prediction = predict_completed_sequence(state, model, actions, log_path)
             state.sequence.clear()
             state.phase = RecognitionPhase.WAITING_FOR_RESET
             state.still_frame_count = 0
-        return
+            return prediction
+        return None
 
     if state.phase == RecognitionPhase.WAITING_FOR_RESET:
         required_still_frames = max(reset_still_frames, 1)
         if state.still_frame_count >= required_still_frames:
             state.phase = RecognitionPhase.IDLE
             state.sequence.clear()
+    return None
 
 
 def validate_model_output(model: Any, actions: np.ndarray) -> None:
@@ -1052,7 +1138,12 @@ def read_threshold_slider(current_threshold: float, disabled: bool) -> float:
     return cv2.getTrackbarPos("Threshold %", WINDOW_NAME) / 100.0
 
 
-def run_webcam_loop(args: argparse.Namespace) -> int:
+def run_webcam_loop(
+    args: argparse.Namespace,
+    on_prediction: Optional[Callable[[PredictionResult], bool | None]] = None,
+    translation_overlay_lines: Optional[Callable[[], Sequence[str]]] = None,
+    hidden_prediction_labels: Optional[set[str]] = None,
+) -> int:
     """Run the real-time webcam processing loop."""
     if args.movement_threshold < 0:
         raise RuntimeError("--movement-threshold must be zero or greater.")
@@ -1126,7 +1217,7 @@ def run_webcam_loop(args: argparse.Namespace) -> int:
                     recognition_state.threshold,
                     args.disable_threshold_slider,
                 )
-                update_recognition_state(
+                accepted_prediction = update_recognition_state(
                     recognition_state,
                     model,
                     actions,
@@ -1136,6 +1227,22 @@ def run_webcam_loop(args: argparse.Namespace) -> int:
                     args.reset_still_frames,
                     args.prediction_log_path,
                 )
+                if accepted_prediction is not None and on_prediction is not None:
+                    should_continue = on_prediction(accepted_prediction)
+                    if (
+                        hidden_prediction_labels
+                        and accepted_prediction.label in hidden_prediction_labels
+                    ):
+                        if recognition_state.sentence:
+                            recognition_state.sentence.pop()
+                        if accepted_prediction.label == "delete" and recognition_state.sentence:
+                            recognition_state.sentence.pop()
+                        if accepted_prediction.label == "stop":
+                            recognition_state.sentence.clear()
+                        recognition_state.accepted_label = ""
+                    if should_continue is False:
+                        logging.info("Recognizer loop stopped by prediction handler.")
+                        break
 
                 current_time = time.perf_counter()
                 fps = 1.0 / max(current_time - previous_time, 1e-6)
@@ -1146,14 +1253,17 @@ def run_webcam_loop(args: argparse.Namespace) -> int:
                     fps,
                     recognition_state,
                     sequence_length,
+                    show_sentence=translation_overlay_lines is None,
                 )
                 prob_viz(recognition_state.probabilities, actions, frame, colors)
-                draw_prediction_history(frame, recognition_state.predictions, actions)
+                if translation_overlay_lines is not None:
+                    draw_translation_overlay(frame, translation_overlay_lines())
 
                 cv2.imshow(WINDOW_NAME, frame)
 
-                if cv2.waitKey(10) & 0xFF == ord("q"):
-                    logging.info("Exit requested with q key.")
+                pressed_key = cv2.waitKey(10) & 0xFF
+                if pressed_key in (ord("q"), ord("Q"), 27):
+                    logging.info("Exit requested from OpenCV window.")
                     break
         finally:
             release_capture(capture)

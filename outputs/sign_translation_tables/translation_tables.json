@@ -1,0 +1,222 @@
+{
+  "generated_at": "2026-06-26T06:02:14.890Z",
+  "source_actions": "sign_actions.py",
+  "dialects": {
+    "fil": {
+      "name": "Filipino (Tagalog)",
+      "locale": "fil-PH",
+      "language": "fil-PH"
+    },
+    "ceb": {
+      "name": "Cebuano",
+      "locale": "ceb-PH",
+      "language": "ceb-PH"
+    },
+    "ilo": {
+      "name": "Ilokano",
+      "locale": "ilo-PH",
+      "language": "ilo-PH"
+    },
+    "pam": {
+      "name": "Kapampangan",
+      "locale": "pam-PH",
+      "language": "pam-PH"
+    },
+    "hil": {
+      "name": "Hiligaynon",
+      "locale": "hil-PH",
+      "language": "hil-PH"
+    }
+  },
+  "translations": {
+    "hello": {
+      "fil": "Kumusta",
+      "ceb": "Kumusta",
+      "ilo": "Kumusta",
+      "pam": "Kumusta",
+      "hil": "Kamusta"
+    },
+    "thank_you": {
+      "fil": "Salamat",
+      "ceb": "Salamat",
+      "ilo": "Agyamanak",
+      "pam": "Salamat",
+      "hil": "Salamat"
+    },
+    "see_you_later": {
+      "fil": "Kita tayo mamaya",
+      "ceb": "Magkita ta unya",
+      "ilo": "Agkita ta inton madamdama",
+      "pam": "Mikit ta ka pang muli",
+      "hil": "Magkitaay kita sa ulihi"
+    },
+    "see": {
+      "fil": "Tingnan",
+      "ceb": "Tan-aw",
+      "ilo": "Kitaen",
+      "pam": "Lawen",
+      "hil": "Tan-aw"
+    },
+    "you": {
+      "fil": "Ikaw",
+      "ceb": "Ikaw",
+      "ilo": "Sika",
+      "pam": "Ika",
+      "hil": "Ikaw"
+    },
+    "later": {
+      "fil": "Mamaya",
+      "ceb": "Unya",
+      "ilo": "Inton madamdama",
+      "pam": "Pang muli",
+      "hil": "Sa ulihi"
+    },
+    "yes": {
+      "fil": "Oo",
+      "ceb": "Oo",
+      "ilo": "Wen",
+      "pam": "Wa",
+      "hil": "Huo"
+    },
+    "no": {
+      "fil": "Hindi",
+      "ceb": "Dili",
+      "ilo": "Saan",
+      "pam": "Ali",
+      "hil": "Indi"
+    },
+    "help": {
+      "fil": "Tulong",
+      "ceb": "Tabang",
+      "ilo": "Tulong",
+      "pam": "Saup",
+      "hil": "Bulig"
+    },
+    "me": {
+      "fil": "Ako",
+      "ceb": "Ako",
+      "ilo": "Siak",
+      "pam": "Aku",
+      "hil": "Ako"
+    },
+    "father": {
+      "fil": "Ama",
+      "ceb": "Amahan",
+      "ilo": "Ama",
+      "pam": "Ibpa",
+      "hil": "Amay"
+    },
+    "mother": {
+      "fil": "Ina",
+      "ceb": "Inahan",
+      "ilo": "Ina",
+      "pam": "Ima",
+      "hil": "Iloy"
+    },
+    "abuse": {
+      "fil": "Pang-aabuso",
+      "ceb": "Pag-abuso",
+      "ilo": "Panag-abuso",
+      "pam": "Pamanyamantala",
+      "hil": "Pag-abuso"
+    },
+    "please": {
+      "fil": "Pakiusap",
+      "ceb": "Palihug",
+      "ilo": "Pangngaasim",
+      "pam": "Pakisabi",
+      "hil": "Palihog"
+    },
+    "want": {
+      "fil": "Gusto",
+      "ceb": "Gusto",
+      "ilo": "Kayat",
+      "pam": "Buri",
+      "hil": "Gusto"
+    },
+    "what": {
+      "fil": "Ano",
+      "ceb": "Unsa",
+      "ilo": "Ania",
+      "pam": "Nanu",
+      "hil": "Ano"
+    },
+    "eat_food": {
+      "fil": "Kumain ng pagkain",
+      "ceb": "Kaon og pagkaon",
+      "ilo": "Mangan ti taraon",
+      "pam": "Mangan pamangan",
+      "hil": "Kaon sang pagkaon"
+    },
+    "more": {
+      "fil": "Mas marami",
+      "ceb": "Dugang",
+      "ilo": "Ad-adu",
+      "pam": "Mas dakal pa",
+      "hil": "Dugang"
+    },
+    "go_to": {
+      "fil": "Pumunta sa",
+      "ceb": "Adto sa",
+      "ilo": "Mapan idiay",
+      "pam": "Munta king",
+      "hil": "Magkadto sa"
+    },
+    "fine": {
+      "fil": "Mabuti",
+      "ceb": "Maayo",
+      "ilo": "Naimbag",
+      "pam": "Mayap",
+      "hil": "Maayo"
+    },
+    "like": {
+      "fil": "Gusto",
+      "ceb": "Ganahan",
+      "ilo": "Kayat",
+      "pam": "Buri",
+      "hil": "Gusto"
+    },
+    "name": {
+      "fil": "Pangalan",
+      "ceb": "Ngalan",
+      "ilo": "Nagan",
+      "pam": "Lagan",
+      "hil": "Ngalan"
+    },
+    "meet": {
+      "fil": "Makilala",
+      "ceb": "Makigkita",
+      "ilo": "Makipagkita",
+      "pam": "Makituki",
+      "hil": "Makigkita"
+    },
+    "nice": {
+      "fil": "Maganda",
+      "ceb": "Nindot",
+      "ilo": "Naimbag",
+      "pam": "Mayap",
+      "hil": "Nami"
+    },
+    "Sorry": {
+      "fil": "Pasensya",
+      "ceb": "Pasayloa ko",
+      "ilo": "Pakawanennak",
+      "pam": "Patawaran mu ku",
+      "hil": "Pasensya"
+    },
+    "where": {
+      "fil": "Saan",
+      "ceb": "Asa",
+      "ilo": "Sadino",
+      "pam": "Nokarin",
+      "hil": "Diin"
+    },
+    "call": {
+      "fil": "Tumawag",
+      "ceb": "Tawag",
+      "ilo": "Umawag",
+      "pam": "Tawag",
+      "hil": "Tawag"
+    }
+  }
+}

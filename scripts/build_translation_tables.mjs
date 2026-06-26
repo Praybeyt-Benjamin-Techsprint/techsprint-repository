@@ -1,22 +1,34 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
 const repoRoot = path.resolve(".");
 const dataDir = path.join(repoRoot, "translation_data");
 const outputDir = path.join(repoRoot, "outputs", "sign_translation_tables");
+const actionsPath = path.join(repoRoot, "sign_actions.py");
+
+async function loadActions() {
+  const source = await fs.readFile(actionsPath, "utf8");
+  const match = source.match(/ACTIONS\s*=\s*\[([\s\S]*?)\]/);
+  if (!match) {
+    throw new Error("Could not find ACTIONS in sign_actions.py");
+  }
+  return [...match[1].matchAll(/"([^"]+)"/g)].map(([, action], actionId) => ({
+    action,
+    actionId,
+  }));
+}
 
 const languages = [
   {
     target_lang: "fil",
     target_locale: "fil-PH",
-    language_name: "Filipino / Tagalog",
+    language_name: "Filipino (Tagalog)",
     notes: "Use Filipino for broad Philippine national-language output; regional Tagalog wording may vary.",
   },
   {
     target_lang: "ceb",
     target_locale: "ceb-PH",
-    language_name: "Cebuano / Binisaya",
+    language_name: "Cebuano",
     notes: "Validate with speakers from the intended deployment area, e.g. Cebu, Bohol, Mindanao.",
   },
   {
@@ -34,40 +46,56 @@ const languages = [
   {
     target_lang: "hil",
     target_locale: "hil-PH",
-    language_name: "Hiligaynon / Ilonggo",
+    language_name: "Hiligaynon",
     notes: "Validate region-specific variants, especially Iloilo versus Negros usage.",
   },
 ];
 
-const actions = [
-  ["hello", 0, "phrase", "Hello"],
-  ["thank_you", 1, "phrase", "Thank you"],
-  ["see_you_later", 2, "phrase", "See you later"],
-  ["see", 3, "word", "See"],
-  ["you", 4, "word", "You"],
-  ["later", 5, "word", "Later"],
-  ["yes", 6, "word", "Yes"],
-  ["no", 7, "word", "No"],
-  ["help", 8, "word", "Help"],
-  ["me", 9, "word", "Me"],
-  ["father", 10, "word", "Father"],
-  ["mother", 11, "word", "Mother"],
-  ["abuse", 12, "word", "Abuse"],
-  ["please", 13, "word", "Please"],
-  ["want", 14, "word", "Want"],
-  ["what", 15, "word", "What"],
-  ["again", 16, "word", "Again"],
-  ["eat", 17, "word", "Eat"],
-  ["eat_food", 18, "phrase", "Eat food"],
-  ["more", 19, "word", "More"],
-  ["go_to", 20, "phrase", "Go to"],
-  ["fine", 21, "word", "Fine"],
-  ["like", 22, "word", "Like"],
-  ["learn", 23, "word", "Learn"],
-  ["name", 24, "word", "Name"],
-  ["meet", 25, "word", "Meet"],
-  ["nice", 26, "word", "Nice"],
-];
+const actionMetadata = {
+  hello: { output_type: "phrase", canonical_text: "Hello" },
+  thank_you: { output_type: "phrase", canonical_text: "Thank you" },
+  see_you_later: { output_type: "phrase", canonical_text: "See you later" },
+  see: { output_type: "word", canonical_text: "See" },
+  you: { output_type: "word", canonical_text: "You" },
+  later: { output_type: "word", canonical_text: "Later" },
+  yes: { output_type: "word", canonical_text: "Yes" },
+  no: { output_type: "word", canonical_text: "No" },
+  help: { output_type: "word", canonical_text: "Help" },
+  me: { output_type: "word", canonical_text: "Me" },
+  father: { output_type: "word", canonical_text: "Father" },
+  mother: { output_type: "word", canonical_text: "Mother" },
+  abuse: { output_type: "word", canonical_text: "Abuse" },
+  please: { output_type: "word", canonical_text: "Please" },
+  want: { output_type: "word", canonical_text: "Want" },
+  what: { output_type: "word", canonical_text: "What" },
+  eat_food: { output_type: "phrase", canonical_text: "Eat food" },
+  more: { output_type: "word", canonical_text: "More" },
+  go_to: { output_type: "phrase", canonical_text: "Go to" },
+  fine: { output_type: "word", canonical_text: "Fine" },
+  like: { output_type: "word", canonical_text: "Like" },
+  name: { output_type: "word", canonical_text: "Name" },
+  meet: { output_type: "word", canonical_text: "Meet" },
+  nice: { output_type: "word", canonical_text: "Nice" },
+  Sorry: { output_type: "word", canonical_text: "Sorry" },
+  where: { output_type: "word", canonical_text: "Where" },
+  call: { output_type: "word", canonical_text: "Call" },
+};
+
+function titleFromAction(action) {
+  return action
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+const actions = (await loadActions()).map(({ action, actionId }) => {
+    const metadata = actionMetadata[action] ?? {
+      output_type: action.includes("_") ? "phrase" : "word",
+      canonical_text: titleFromAction(action),
+    };
+    return { action, actionId, ...metadata };
+  });
+const actionSet = new Set(actions.map(({ action }) => action));
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz".split("").map((letter, idx) => ({
   action_id: idx + 27,
@@ -101,26 +129,24 @@ const draftTranslations = {
   please: { fil: "Pakiusap", ceb: "Palihug", ilo: "Pangngaasim", pam: "Pakisabi", hil: "Palihog" },
   want: { fil: "Gusto", ceb: "Gusto", ilo: "Kayat", pam: "Buri", hil: "Gusto" },
   what: { fil: "Ano", ceb: "Unsa", ilo: "Ania", pam: "Nanu", hil: "Ano" },
-  again: { fil: "Muli", ceb: "Usab", ilo: "Manen", pam: "Pasibayu", hil: "Liwat" },
-  eat: { fil: "Kumain", ceb: "Kaon", ilo: "Mangan", pam: "Mangan", hil: "Kaon" },
   eat_food: { fil: "Kumain ng pagkain", ceb: "Kaon og pagkaon", ilo: "Mangan ti taraon", pam: "Mangan pamangan", hil: "Kaon sang pagkaon" },
   more: { fil: "Mas marami", ceb: "Dugang", ilo: "Ad-adu", pam: "Mas dakal pa", hil: "Dugang" },
   go_to: { fil: "Pumunta sa", ceb: "Adto sa", ilo: "Mapan idiay", pam: "Munta king", hil: "Magkadto sa" },
   fine: { fil: "Mabuti", ceb: "Maayo", ilo: "Naimbag", pam: "Mayap", hil: "Maayo" },
   like: { fil: "Gusto", ceb: "Ganahan", ilo: "Kayat", pam: "Buri", hil: "Gusto" },
-  learn: { fil: "Matuto", ceb: "Makat-on", ilo: "Agadal", pam: "Mibalu", hil: "Magtuon" },
   name: { fil: "Pangalan", ceb: "Ngalan", ilo: "Nagan", pam: "Lagan", hil: "Ngalan" },
   meet: { fil: "Makilala", ceb: "Makigkita", ilo: "Makipagkita", pam: "Makituki", hil: "Makigkita" },
   nice: { fil: "Maganda", ceb: "Nindot", ilo: "Naimbag", pam: "Mayap", hil: "Nami" },
+  Sorry: { fil: "Pasensya", ceb: "Pasayloa ko", ilo: "Pakawanennak", pam: "Patawaran mu ku", hil: "Pasensya" },
+  where: { fil: "Saan", ceb: "Asa", ilo: "Sadino", pam: "Nokarin", hil: "Diin" },
+  call: { fil: "Tumawag", ceb: "Tawag", ilo: "Umawag", pam: "Tawag", hil: "Tawag" },
 };
 
 const phraseRules = [
   ["R001", "help me", "Help me", { fil: "Tulungan mo ako", ceb: "Tabangi ko", ilo: "Tulongannak", pam: "Saupan mu ku", hil: "Buligi ako" }],
   ["R002", "please help me", "Please help me", { fil: "Pakiusap, tulungan mo ako", ceb: "Palihug tabangi ko", ilo: "Pangngaasim, tulongannak", pam: "Pakisabi, saupan mu ku", hil: "Palihog buligi ako" }],
-  ["R003", "want eat", "I want to eat", { fil: "Gusto kong kumain", ceb: "Gusto ko mokaon", ilo: "Kayatko nga mangan", pam: "Buri kung mangan", hil: "Gusto ko magkaon" }],
   ["R004", "want eat_food", "I want food", { fil: "Gusto ko ng pagkain", ceb: "Gusto ko og pagkaon", ilo: "Kayatko ti taraon", pam: "Buri ku pamangan", hil: "Gusto ko sang pagkaon" }],
   ["R005", "want more", "I want more", { fil: "Gusto ko pa", ceb: "Gusto pa ko", ilo: "Kayatko pay", pam: "Buri ku pa", hil: "Gusto ko pa" }],
-  ["R006", "eat more", "Eat more", { fil: "Kumain pa", ceb: "Kaon pa", ilo: "Mangan pay", pam: "Mangan pa", hil: "Kaon pa" }],
   ["R007", "what name", "What is your name?", { fil: "Ano ang pangalan mo?", ceb: "Unsa imong ngalan?", ilo: "Ania ti naganmo?", pam: "Nanu ing lagyu mu?", hil: "Ano ang ngalan mo?" }],
   ["R008", "what you want", "What do you want?", { fil: "Ano ang gusto mo?", ceb: "Unsa imong gusto?", ilo: "Ania ti kayatmo?", pam: "Nanu ing buri mu?", hil: "Ano ang gusto mo?" }],
   ["R009", "nice meet you", "Nice to meet you", { fil: "Ikinagagalak kitang makilala", ceb: "Nalipay ko nga nakaila nimo", ilo: "Naragsakak nga naam-ammoanka", pam: "Mayap a makilala daka", hil: "Nalipay ako nga nakilala ka" }],
@@ -130,10 +156,6 @@ const phraseRules = [
   ["R013", "father help me", "Father, help me", { fil: "Ama, tulungan mo ako", ceb: "Amahan, tabangi ko", ilo: "Ama, tulongannak", pam: "Ibpa, saupan mu ku", hil: "Amay, buligi ako" }],
   ["R014", "mother help me", "Mother, help me", { fil: "Ina, tulungan mo ako", ceb: "Inahan, tabangi ko", ilo: "Ina, tulongannak", pam: "Ima, saupan mu ku", hil: "Iloy, buligi ako" }],
   ["R015", "abuse help me", "I am being abused. Help me.", { fil: "Inaabuso ako. Tulungan mo ako.", ceb: "Giabuso ko. Tabangi ko.", ilo: "Maab-abusoak. Tulongannak.", pam: "Aabusu ku. Saupan mu ku.", hil: "Ginaabuso ako. Buligi ako." }],
-  ["R016", "please again", "Please repeat that", { fil: "Pakiulit", ceb: "Palihug usba", ilo: "Pangngaasim, ulitem", pam: "Pakisabi, ulitan mu", hil: "Palihog liwata" }],
-  ["R017", "want learn", "I want to learn", { fil: "Gusto kong matuto", ceb: "Gusto ko makat-on", ilo: "Kayatko nga agadal", pam: "Buri kung mibalu", hil: "Gusto ko magtuon" }],
-  ["R018", "like learn", "I like learning", { fil: "Gusto kong matuto", ceb: "Ganahan ko makat-on", ilo: "Kayatko ti agadal", pam: "Buri ku ing pamibalu", hil: "Gusto ko magtuon" }],
-  ["R019", "me want learn", "I want to learn", { fil: "Gusto kong matuto", ceb: "Gusto ko makat-on", ilo: "Kayatko nga agadal", pam: "Buri kung mibalu", hil: "Gusto ko magtuon" }],
   ["R020", "no abuse me", "Do not abuse me", { fil: "Huwag mo akong abusuhin", ceb: "Ayaw ko abusohi", ilo: "Saan nak nga abusoen", pam: "Ali mu ku abusuan", hil: "Indi mo ako pag-abusuhon" }],
 ];
 
@@ -187,7 +209,7 @@ function splitForIndex(index) {
   return "train";
 }
 
-const directRows = actions.flatMap(([action, actionId, outputType, canonical]) => {
+const directRows = actions.flatMap(({ action, actionId, output_type: outputType, canonical_text: canonical }) => {
   return languages.map((lang) => [
     actionId,
     action,
@@ -210,7 +232,11 @@ const directRows = actions.flatMap(([action, actionId, outputType, canonical]) =
   ]);
 });
 
-const phraseRows = phraseRules.flatMap(([ruleId, sequence, canonical, translations], idx) => {
+const modelPhraseRules = phraseRules.filter(([, sequence]) => {
+  return sequence.split(/\s+/).every((action) => actionSet.has(action));
+});
+
+const phraseRows = modelPhraseRules.flatMap(([ruleId, sequence, canonical, translations], idx) => {
   return languages.map((lang) => [
     ruleId,
     sequence,
@@ -287,10 +313,76 @@ async function main() {
   await fs.mkdir(dataDir, { recursive: true });
   await fs.mkdir(outputDir, { recursive: true });
 
+  const translationTables = {
+    generated_at: new Date().toISOString(),
+    source_actions: path.relative(repoRoot, actionsPath),
+    dialects: Object.fromEntries(
+      languages.map((lang) => [
+        lang.target_lang,
+        {
+          name: lang.language_name,
+          locale: lang.target_locale,
+          language: lang.target_locale,
+        },
+      ]),
+    ),
+    translations: Object.fromEntries(
+      actions.map(({ action }) => [
+        action,
+        Object.fromEntries(
+          languages.map((lang) => [
+            lang.target_lang,
+            draftTranslations[action]?.[lang.target_lang] ?? "",
+          ]),
+        ),
+      ]),
+    ),
+  };
+
   await fs.writeFile(path.join(dataDir, "direct_translations.csv"), toCsv(headers.direct, directRows), "utf8");
   await fs.writeFile(path.join(dataDir, "phrase_rules.csv"), toCsv(headers.phrase, phraseRows), "utf8");
   await fs.writeFile(path.join(dataDir, "alphabet_outputs.csv"), toCsv(headers.alphabet, alphabetRows), "utf8");
   await fs.writeFile(path.join(dataDir, "languages.csv"), toCsv(headers.languages, languageRows), "utf8");
+  await fs.writeFile(
+    path.join(repoRoot, "translation_tables.json"),
+    JSON.stringify(translationTables, null, 2) + "\n",
+    "utf8",
+  );
+  await fs.writeFile(
+    path.join(outputDir, "translation_tables.json"),
+    JSON.stringify(translationTables, null, 2) + "\n",
+    "utf8",
+  );
+
+  let artifactTool = null;
+  try {
+    artifactTool = await import("@oai/artifact-tool");
+  } catch (error) {
+    await fs.writeFile(
+      path.join(outputDir, "build_summary.json"),
+      JSON.stringify(
+        {
+          translationTablePath: path.join(repoRoot, "translation_tables.json"),
+          sourceActions: path.relative(repoRoot, actionsPath),
+          modelLabels: actions.length,
+          csvDirectory: dataDir,
+          directRows: directRows.length,
+          phraseRows: phraseRows.length,
+          filteredPhraseRules: phraseRules.length - modelPhraseRules.length,
+          alphabetRows: alphabetRows.length,
+          languageRows: languageRows.length,
+          xlsxSkipped: true,
+          xlsxSkippedReason: error.message,
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+    return;
+  }
+
+  const { SpreadsheetFile, Workbook } = artifactTool;
 
   const workbook = Workbook.create();
 
@@ -308,7 +400,7 @@ async function main() {
     ["Review status", "All starter translations are marked needs_native_review. Replace AI_DRAFT with translator IDs after human validation."],
     ["Letters", "Alphabet signs are in AlphabetOutputs and should usually be displayed directly, not translated."],
     ["Recommended app flow", "recognized actions -> phrase-rule lookup -> direct translation fallback -> display selected target language"],
-    ["CSV exports", "translation_data/direct_translations.csv, phrase_rules.csv, alphabet_outputs.csv, languages.csv"],
+    ["Exports", "translation_tables.json plus CSV files in translation_data/."],
     ["Caution", "Do not deploy emergency or abuse-related outputs until reviewed by native speakers and accessibility stakeholders."],
     ["Date created", "2026-06-26"],
   ];
@@ -358,9 +450,13 @@ async function main() {
     JSON.stringify(
       {
         workbookPath,
+        translationTablePath: path.join(repoRoot, "translation_tables.json"),
+        sourceActions: path.relative(repoRoot, actionsPath),
+        modelLabels: actions.length,
         csvDirectory: dataDir,
         directRows: directRows.length,
         phraseRows: phraseRows.length,
+        filteredPhraseRules: phraseRules.length - modelPhraseRules.length,
         alphabetRows: alphabetRows.length,
         languageRows: languageRows.length,
         checks: checks.map((check) => check.ndjson).join("\n"),

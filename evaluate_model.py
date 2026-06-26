@@ -29,7 +29,7 @@ from sklearn.metrics import (
 )
 from tensorflow.keras.models import load_model
 
-from sign_actions import ACTIONS
+from sign_actions import MODEL_ACTIONS
 from preprocess_dataset import DATA_PATH, SEQUENCE_LENGTH, TEST_SIZE
 from preprocess_dataset import preprocess_dataset
 
@@ -117,7 +117,7 @@ def load_actions(label_map_path: Path, fallback_actions: list[str] | None) -> np
 
     if fallback_actions:
         return np.array(fallback_actions)
-    return np.array(ACTIONS)
+    return np.array(MODEL_ACTIONS)
 
 
 def build_preprocess_args(args: argparse.Namespace, actions: np.ndarray) -> argparse.Namespace:

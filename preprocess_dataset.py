@@ -30,7 +30,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 
-from sign_actions import ACTIONS
+from sign_actions import MODEL_ACTIONS
 
 
 # Preprocessing configuration.
@@ -60,8 +60,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--actions",
         nargs="*",
-        default=ACTIONS,
-        help="Action labels to load. Defaults to the configured ACTIONS list.",
+        default=MODEL_ACTIONS,
+        help="Action labels to load. Defaults to the configured MODEL_ACTIONS list.",
     )
     parser.add_argument(
         "--auto-actions",

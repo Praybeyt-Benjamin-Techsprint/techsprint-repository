@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from sign_actions import ACTIONS
+from sign_actions import MODEL_ACTIONS
 
 try:
     import cv2
@@ -95,8 +95,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--actions",
         nargs="*",
-        default=ACTIONS,
-        help="Action labels to collect. Defaults to the configured ACTIONS list.",
+        default=MODEL_ACTIONS,
+        help="Action labels to collect. Defaults to the configured MODEL_ACTIONS list.",
     )
     parser.add_argument(
         "--camera-index",
