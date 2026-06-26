@@ -30,38 +30,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 
+from sign_actions import ACTIONS
+
 
 # Preprocessing configuration.
 DATA_PATH = Path("dataset")
-ACTIONS = [
-    "hello",
-    "thank_you",
-    "see_you_later",
-    "see",
-    "you",
-    "later",
-    "yes",
-    "no",
-    "help",
-    "me",
-    "father",
-    "mother",
-    "abuse",
-    "please",
-    "want",
-    "what",
-    "eat_food",
-    "more",
-    "go_to",
-    "fine",
-    "like",
-    "name",
-    "meet",
-    "nice",
-    "Sorry", 
-    "where",
-    "call",
-]
 SEQUENCE_LENGTH = 30
 TEST_SIZE = 0.2
 RANDOM_STATE = 42

@@ -21,8 +21,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoa
 from tensorflow.keras.layers import Dense, Dropout, Input, LSTM
 from tensorflow.keras.models import Sequential
 
+from sign_actions import ACTIONS
 from preprocess_dataset import (
-    ACTIONS,
     DATA_PATH,
     SEQUENCE_LENGTH,
     TEST_SIZE,

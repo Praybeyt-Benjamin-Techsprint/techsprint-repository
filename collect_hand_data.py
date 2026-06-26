@@ -25,6 +25,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from sign_actions import ACTIONS
+
 try:
     import cv2
     import mediapipe as mp
@@ -41,9 +43,6 @@ except ImportError as exc:
     raise SystemExit(1) from exc
 
 # Dataset configuration.
-ACTIONS = [
-    "call",
-]
 NO_SEQUENCES = 30
 SEQUENCE_LENGTH = 30
 DATA_PATH = Path("dataset")
@@ -92,6 +91,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DATA_PATH,
         help=f"Root dataset directory. Default: {DATA_PATH}.",
+    )
+    parser.add_argument(
+        "--actions",
+        nargs="*",
+        default=ACTIONS,
+        help="Action labels to collect. Defaults to the configured ACTIONS list.",
     )
     parser.add_argument(
         "--camera-index",
@@ -315,11 +320,11 @@ def existing_sequence_numbers(action_path: Path) -> list[int]:
     return sorted(sequence_numbers)
 
 
-def create_dataset_folders(data_path: Path) -> dict[str, list[int]]:
+def create_dataset_folders(data_path: Path, actions: list[str]) -> dict[str, list[int]]:
     """Create the next batch of sequence folders without overwriting old data."""
     collection_plan: dict[str, list[int]] = {}
 
-    for action in ACTIONS:
+    for action in actions:
         action_path = data_path / action
         existing_sequences = existing_sequence_numbers(action_path)
         start_sequence = existing_sequences[-1] + 1 if existing_sequences else 0
@@ -555,7 +560,7 @@ def record_sequence(
 
 def run_collection(args: argparse.Namespace) -> int:
     """Run the full data collection workflow."""
-    collection_plan = create_dataset_folders(args.data_path)
+    collection_plan = create_dataset_folders(args.data_path, args.actions)
     camera_session = open_working_camera(args)
     capture = camera_session.capture
     mp_holistic = mp.solutions.holistic

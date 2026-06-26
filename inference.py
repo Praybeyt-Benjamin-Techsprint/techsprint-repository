@@ -24,7 +24,8 @@ import numpy as np
 from tensorflow.keras.layers import Dense, Dropout, Input, LSTM
 from tensorflow.keras.models import Sequential, load_model
 
-from preprocess_dataset import ACTIONS, DATA_PATH, SEQUENCE_LENGTH, TEST_SIZE
+from sign_actions import ACTIONS
+from preprocess_dataset import DATA_PATH, SEQUENCE_LENGTH, TEST_SIZE
 from preprocess_dataset import preprocess_dataset
 
 
